@@ -28,7 +28,6 @@ function start() {
     
     document.getElementById('iterations').addEventListener("input", updateIterations, false);
     var rb = document.getElementsByName("color");
-    console.log(rb);
     for(var i = 0; i < rb.length; i++) {
       rb[i].onclick = (function(i) { return function() { updateColor(i); }}(i));
     }
@@ -38,15 +37,12 @@ function start() {
 
   if (gl) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clearDepth(1.0);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
 
     initShaders();
 
     initBuffers();
 
-    setInterval(drawScene, 30);
+    drawScene();
   }
 }
 
@@ -79,7 +75,7 @@ function initBuffers() {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 }
 
-function drawScene() {
+function drawScene(lastTime) {
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -91,14 +87,15 @@ function drawScene() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
     gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-    //setMatrixUniforms();
     setWindowUniforms(canvas.width, canvas.height);
     setPositionUniforms();
     setRenderingUniforms();
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     invalidated = false;
   }
+  setTimeout(()=>drawScene(), 30);
 }
+
 
 function initShaders() {
   var fragmentShader = getShader(gl, "shader-fs");
@@ -206,15 +203,8 @@ function mouseMove(e)
     var x = e.offsetX;
     var y = e.offsetY;
   
-    var divisor = 1;
-
-    if (zoom < 4) ;else
-    if (zoom < 8) divisor = zoom; else
-    if (zoom < 13) divisor = Math.pow(zoom, 2);
-    else divisor = Math.pow(zoom, 3);
-    console.log(divisor + " | " + zoom);
-    offset[0] -= ((x - last[0]) / canvas.width) / divisor ;
-    offset[1] += ((y - last[1]) / canvas.height) / divisor ;
+    offset[0] -= ((x - last[0]) / canvas.width) / (0.4*Math.pow(2, zoom));
+    offset[1] += ((y - last[1]) / canvas.height) / (0.4*Math.pow(2, zoom));
     last = [
         x,
         y
@@ -228,7 +218,6 @@ function MouseWheelHandler() {
   if (zoomTarget == 0)
     zoomTarget = 0.01;
   invalidated = true;
-  console.log(zoomTarget);
 }
 
 function updateIterations() {
@@ -239,6 +228,5 @@ function updateIterations() {
 
 function updateColor(i) {
   color = i;
-  console.log("color" + color);
   invalidated = true;
 }
