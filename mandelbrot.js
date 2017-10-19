@@ -1,13 +1,13 @@
 var canvas;
 var gl;
 var squareVerticesBuffer;
-var mvMatrix;
 var shaderProgram;
 var vertexPositionAttribute;
 var iterations = 1000;
 var zoomTarget = 1;
 var zoom = 1;
 var offset = [0, 0];
+// Running this is suprisingly intensive for web browsers
 var invalidated = true;
 var color = 0;
 var isDown = false; // whether mouse is pressed

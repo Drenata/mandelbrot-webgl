@@ -4,9 +4,8 @@
     <title>WebGL Demo</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="css.css">
-    <script src="sylvester.js" type="text/javascript"></script>
+
     <script src="mandelbrot.js" type="text/javascript"></script>
-    <script src="glUtils.js" type="text/javascript"></script>
 
     <!-- Fragment shader program -->
 
@@ -24,6 +23,10 @@
         float modI(float a,float b) {
           float m=a-floor((a+0.5)/b)*b;
           return floor(m+0.5);
+        }
+
+        vec2 q2s(float a, float b) {
+          return vec2(a+b,b-(b-a));
         }
 
         void main(void) {
@@ -98,13 +101,21 @@
       Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
     </canvas>
     <div class="input">
-      <label><h4 id="num-iterations">700 iterations</h4><br>
+      <label>
+        <h4 id="num-iterations">700 iterations</h4><br>
         <input type="range" id="iterations" min="1" max="3000" defaultValue="700">
-        <h4>Coloring scheme</h4><div class="box">
+      </label>
+      <h4>Coloring scheme</h4>
+      <div class="box">
         <label><input type="radio" name="color" checked>Green</label><br>
         <label><input type="radio" name="color">Wikipedia</label><br>
         <label><input type="radio" name="color">Boring</label>
-      </label></div>
-   </div>
+      </div>
+      <div class="warning">
+        <h4>Warnings</h4>
+        The controls are bad and
+        large amount of iterations may freeze low end computers
+      </div>
+    </div>
   </body>
 </html>
